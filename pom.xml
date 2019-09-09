@@ -52,7 +52,7 @@
 
 
     <modules>
-        <module>my-shop-external</module>
+<!--        <module>my-shop-external</module>-->
         <module>my-shop-denpendencies</module>
         <module>my-shop-commons</module>
         <module>my-shop-domain</module>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 加载配置属性文件shop.properties 里面是一些必须的配置参数  context:property-placeholder：动态加载属性配置文件以变量的方式引用需要的值-->
+    <context:property-placeholder ignore-unresolvable="true" location="classpath:shop.properties"/>
+
+    <!--相当于sendEmailUtils new了1个SendEmailUtils   把工具类交给spring管理-->
+    <bean id="sendEmailUtils" class="com.lu.ming.shop.commons.utils.SendEmailUtils"/>
+
+    <!--相当于email new了1个SimpleEmail -->
+    <bean id="email" class="org.apache.commons.mail.SimpleEmail">
+        <property name="hostName" value="${email.host,name}"/>
+        <property name="smtpPort" value="${email.host.port}"/>
+        <property name="authenticator">
+            <!--new 1个带参数的DefaultAuthenticator-->
+            <bean class="org.apache.commons.mail.DefaultAuthenticator">
+                <constructor-arg name="userName" value="${email.username}"/>
+                <constructor-arg name="password" value="${email.password}"/>
+            </bean>
+        </property>
+        <property name="SSLOnConnect" value="true"/>
+        <property name="from" value="${email.username}"/>
+    </bean>
+</beans>

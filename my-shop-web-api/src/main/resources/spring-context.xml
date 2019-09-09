@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--    配置注解-->
+    <context:annotation-config />
+    <context:component-scan base-package="com.lu.ming.shop.web.api">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    </context:component-scan>
+
+    <!-- 配置事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- 开启事务注解驱动 -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+<!--    &lt;!&ndash; 配置 Bean Validator 定义 &ndash;&gt;-->
+<!--    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>-->
+<!--&lt;!&ndash;    手动注入 beanValidator  注意spring只能注入对象，不能注入属性而BeanValidator中的validator是属性  property name="validator":属性名是validator，实现的是bean id="validator" &ndash;&gt;-->
+<!--    <bean id="beanValidator" class="com.lu.ming.shop.commons.validator.BeanValidator">-->
+<!--        <property name="validator" ref="validator" />-->
+<!--    </bean>-->
+</beans>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--指向数据访问层接口-->
+<mapper namespace="com.lu.ming.shop.web.api.dao.TbContentDao">
+    <!--    映射文件，简称为 Mapper，主要完成 DAO 层中 SQL 语句的映射。映射文件名随意，-->
+    <!--    一般放在 src/resources/mapper 文件夹中。这里映射文件名称定为 TbUserMapper.xml-->
+    <!--    关系映射里的查询sql语句的别名要和实体类的名字一样。-->
+<!--    &#45;&#45;         a.category_id AS categoryId,-->
+    <sql id="tbContentColumns">
+        a.id,
+        a.title,
+        a.sub_title AS subTitle,
+        a.title_desc AS titleDesc,
+        a.url,
+        a.pic,
+        a.pic2,
+        a.content,
+        a.created,
+        a.updated,
+        b.id AS "tbContentCategory.id",
+        b.name AS "tbContentCategory.name"
+    </sql>
+
+    <sql id="tbContentJoins">
+        LEFT JOIN tb_content_category AS b on a.category_id = b.id
+    </sql>
+
+    <select id="selectByCategoryId" resultType="TbContent">
+        SELECT
+        <include refid="tbContentColumns"/>
+        FROM tb_content AS a
+        <include refid="tbContentJoins"/>
+        WHERE
+        a.category_id = #{tbContentCategory.id}
+    </select>
+</mapper>

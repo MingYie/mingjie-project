@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--指向数据访问层接口-->
+<mapper namespace="com.lu.ming.shop.web.admin.dao.TbContentCategoryDao">
+    <!--    映射文件，简称为 Mapper，主要完成 DAO 层中 SQL 语句的映射。映射文件名随意，-->
+    <!--    一般放在 src/resources/mapper 文件夹中。这里映射文件名称定为 TbUserMapper.xml-->
+    <!--    关系映射里的查询sql语句的别名要和实体类的名字一样。 a.parent_id AS parentId,-->
+    <sql id="tbContentCategoryColumns">
+        a.id,
+        a.name,
+        a.status,
+        a.sort_order AS sortOrder,
+        a.is_parent AS isParent,
+        a.created,
+        a.updated,
+        IFNULL (b.id,'0') AS `parent.id`,
+        IFNULL (b.name,'/') AS `parent.name`
+    </sql>
+    <sql id="tbContentCategoryJoins">
+        LEFT JOIN tb_content_category AS b on a.parent_id = b.id
+    </sql>
+
+<!--根据a.parent_id ASC, a.sort_order ASC, a.is_parent DESC 来排序-->
+    <select id="selectAll" resultType="TbContentCategory">
+        select
+        <include refid="tbContentCategoryColumns"/>
+        FROM
+        tb_content_category as a
+        <include refid="tbContentCategoryJoins"/>
+        order by
+        a.parent_id ASC,
+        a.sort_order ASC,
+        a.is_parent DESC
+    </select>
+<!--    根据Pid来查询父类节点-->
+    <select id="selectByPid" resultType="TbContentCategory">
+        select
+        <include refid="tbContentCategoryColumns"/>
+        FROM
+        tb_content_category as a
+        <include refid="tbContentCategoryJoins"/>
+        where a.parent_id = #{parent.id}
+    </select>
+
+<!--根据id来查询-->
+    <select id="findById" resultType="TbContentCategory">
+        SELECT
+        <include refid="tbContentCategoryColumns"/>
+        from tb_content_category AS a
+        <include refid="tbContentCategoryJoins"/>
+        WHERE a.id= #{id};
+    </select>
+    
+    <select id="insert">
+        INSERT INTO `tb_content_category`
+            (
+            `parent_id`,
+            `name`,
+            `status`,
+            `sort_order`,
+            `is_parent`,
+            `created`,
+            `updated`
+            )
+            VALUES
+            (
+            #{parent.id},
+            #{name},
+            #{status},
+            #{sortOrder},
+            #{isParent},
+            #{created},
+            #{updated}
+            );
+    </select>
+
+    <select id="update">
+        UPDATE `tb_content_category`
+            SET
+            `parent_id` = #{parent.id},
+            `name` = #{name},
+            `status` = #{status},
+            `sort_order` = #{sortOrder},
+            `is_parent` = #{isParent},
+            `created` = #{created},
+            `updated` = #{updated}
+            WHERE
+            `id` = #{id};
+    </select>
+
+    <select id="delete">
+        DELETE FROM tb_content_category
+        WHERE
+        `id` = #{id};
+    </select>
+</mapper>

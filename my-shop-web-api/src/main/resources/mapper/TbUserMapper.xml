@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--指向数据访问层接口-->
+<mapper namespace="com.lu.ming.shop.web.api.dao.TbUserDao">
+<!--    映射文件，简称为 Mapper，主要完成 DAO 层中 SQL 语句的映射。映射文件名随意，-->
+<!--    一般放在 src/resources/mapper 文件夹中。这里映射文件名称定为 TbUserMapper.xml-->
+<!--    关系映射里的查询sql语句的别名要和实体类的名字一样。-->
+
+    <sql id="tbUserColumns">
+        a.id,
+        a.username,
+        a.password,
+        a.phone,
+        a.email,
+        a.created,
+        a.updated
+    </sql>
+
+    <select id="login" resultType="tbUser">
+        SELECT
+        <include refid="tbUserColumns"/>
+        FROM tb_user AS a
+        WHERE username = #{username}
+        OR phone = #{username}
+        OR email = #{username}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        SELECT
+        COUNT(*)
+        FROM tb_user AS a
+        WHERE username = #{username}
+        OR phone = #{phone}
+        OR email = #{email}
+    </select>
+
+    <select id="insert" resultType="tbUser">
+        INSERT INTO `tb_user`
+            (
+                `username`,
+                `password`,
+                `phone`,
+                `email`,
+                `created`,
+                `updated`
+            )
+            VALUES
+            (
+                #{username},
+                #{password},
+                #{phone},
+                #{email},
+                #{created},
+                #{updated}
+            );
+    </select>
+</mapper>

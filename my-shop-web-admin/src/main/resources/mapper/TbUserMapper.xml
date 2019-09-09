@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--指向数据访问层接口-->
+<mapper namespace="com.lu.ming.shop.web.admin.dao.TbUserDao">
+<!--    映射文件，简称为 Mapper，主要完成 DAO 层中 SQL 语句的映射。映射文件名随意，-->
+<!--    一般放在 src/resources/mapper 文件夹中。这里映射文件名称定为 TbUserMapper.xml-->
+<!--    关系映射里的查询sql语句的别名要和实体类的名字一样。-->
+
+    <sql id="tbUserColumns">
+        a.id,
+        a.username,
+        a.password,
+        a.phone,
+        a.email,
+        a.created,
+        a.updated
+    </sql>
+
+    <select id="selectAll" resultType="tbUser">
+        SELECT
+            <include refid="tbUserColumns"/>
+        from tb_user AS a
+    </select>
+
+    <select id="insert" resultType="tbUser">
+        INSERT INTO `tb_user`
+                (
+                    `username`,
+                    `password`,
+                    `phone`,
+                    `email`,
+                    `created`,
+                    `updated`
+                )
+                VALUES
+                (
+                    #{username},
+                    #{password},
+                    #{phone},
+                    #{email},
+                    #{created},
+                    #{updated}
+                );
+    </select>
+
+    <select id="delete">
+        DELETE FROM `tb_user`
+        WHERE
+        `id` = #{id} ;
+    </select>
+
+    <select id="findById" resultType="tbUser">
+       SELECT
+        <include refid="tbUserColumns"/>
+        from tb_user AS a
+        WHERE a.id= #{id};
+    </select>
+
+    <select id="update" resultType="tbUser">
+        UPDATE `tb_user`
+            SET
+            username = #{username} ,
+            password = #{password} ,
+            phone = #{phone} ,
+            email = #{email},
+            created = #{created},
+            updated = #{updated}
+        WHERE
+            id = #{id};
+    </select>
+
+<!--    <select id="selectByUsername" resultType="tbUser">-->
+<!--        SELECT-->
+<!--        <include refid="tbUserColumns"/>-->
+<!--        from tb_user AS a-->
+<!--        where a.username LIKE CONCAT('%',#{username},'%')-->
+<!--    </select>-->
+
+    <select id="getByEmail" resultType="tbUser">
+        select
+        <include refid="tbUserColumns"/>
+        from tb_user AS a
+        where a.email = #{email}
+    </select>
+
+<!--    Mybatis动态sql 条件查询-->
+
+<!--    <select id="search" resultType="tbUser">-->
+<!--        select-->
+<!--        <include refid="tbUserColumns"/>-->
+<!--        from tb_user AS a-->
+<!--        <where>-->
+<!--            <if test="username != null and username !=''">-->
+<!--                AND a.username LIKE CONCAT('%',#{username},'%')-->
+<!--            </if>-->
+<!--            <if test="phone != null and phone!=''">-->
+<!--                AND a.phone LIKE CONCAT('%',#{phone},'%')-->
+<!--            </if>-->
+<!--            <if test="email != null and email!=''">-->
+<!--                AND a.email LIKE CONCAT('%',#{email},'%')-->
+<!--            </if>-->
+<!--        </where>-->
+<!--    </select>-->
+
+<!--    批量删除-->
+    <delete id="deleteArray">
+        DELETE FROM tb_user
+        where id in
+        <foreach collection="array" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+<!--    分页操作 注意这里面的pageParams是AbstractBaseServiceimpl中page方法里的key值pageParams-->
+    <select id="page" resultType="tbUser" parameterType="java.util.Map">
+        select
+        <include refid="tbUserColumns"/>
+        from
+        tb_user AS a
+        <where>
+            <if test="pageParams.username != null and pageParams.username != ''">
+                AND a.username LIKE CONCAT ('%',#{pageParams.username},'%')
+            </if>
+            <if test="pageParams.email != null and pageParams.email != ''">
+                AND a.email LIKE CONCAT ('%',#{pageParams.email},'%')
+            </if>
+            <if test="pageParams.phone != null and pageParams.phone != ''">
+                AND a.phone LIKE CONCAT ('%',#{pageParams.phone},'%')
+            </if>
+        </where>
+        LIMIT #{start},#{length}
+    </select>
+<!--    查询总记录数-->
+    <select id="count" resultType="java.lang.Integer">
+        select COUNT(*) from tb_user as a
+        <where>
+            <if test="username != null and username != ''">
+                AND a.username LIKE CONCAT ('%',#{username},'%')
+            </if>
+            <if test="email != null and email != ''">
+                AND a.email LIKE CONCAT ('%',#{email},'%')
+            </if>
+            <if test="phone != null and phone != ''">
+                AND a.phone LIKE CONCAT ('%',#{phone},'%')
+            </if>
+        </where>
+    </select>
+</mapper>
